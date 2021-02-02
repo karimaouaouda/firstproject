@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!--c:\wamp64\www\solve\scrapyt.py-->
+	<!--get_audio_only()-->
+	<style type="text/css">
+		*{
+			margin: 0px;
+			padding:0px;
+		}
+		body{
+			overflow: scroll;
+		}
+		canvas{
+			border: 2px solid red;
+			margin-left: 300px;
+			background: pink;
+		}
+		a{
+			position: relative;
+			width: 300px;
+			background: white;
+			transition: 5s;
+			height: 60px;
+			border: none;
+			font-family: "volcano";
+			outline: none;
+			font-size: 25px;
+		}
+		svg{
+			position: absolute;
+			width: 100%;
+			height:100%;
+			top: 0px;
+			left: 0px;
+		}
+		svg rect{
+			position: absolute;
+			stroke: #cccccc;
+			stroke-width:4;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
+			transition: 2s;
+			fill: transparent;
+			stroke-dasharray: 300,60;
+		}
+		svg rect:hover{
+			stroke-dasharray: 2;
+			stroke-dashoffset:1500;
+		}
+		a:hover{
+			background: linear-gradient(to left, black 10%,gray 51%,black );
+		}
+		p{
+			position: relative;
+			top: 0px;
+			left: 0px;
+		}
+	</style>
+	<title></title>
+</head>
+<body>
+	<p id="p"></p>
+	<input type="range" value="1" name="d" id="speed" style="position: relative;top: -500px;">
+<canvas id="cnvs" width="600" height="600"></canvas>
+<a id="clk">click<svg><rect></rect></svg></a>
+<input type="color" id="clr"><button onclick="clicked()" id="clr">click here</button><br>
+<p id="ps"></p>
+<script type="text/javascript">
+	function clicked(){
+		var clr = document.getElementById("clr").value;
+		document.getElementById('p').innerHTML =(clr);
+			}
+	var c,ctx,width,x,y,xlen,ylen,dir,m,odir,fx,fy,tomb;
+	setup();
+	function setup(){
+	c=document.getElementById('cnvs');
+	ctx=c.getContext("2d");
+	width=c.width;
+	ctx.fillRect(0,0,150,10);
+	ctx.fillRect(0,0,10,150);
+	ctx.fillRect(450,0,150,10);
+	ctx.fillRect(590,0,10,150);
+	//qsfsdfs
+	ctx.fillRect(0,450,10,150);
+	ctx.fillRect(0,590,150,10);
+	ctx.fillRect(450,590,150,10);
+	ctx.fillRect(590,450,10,150);
+	x=[width/2];
+	y=[width/2];
+	}
+	main();
+	function main(){
+	ctx.clearRect(0,0,600,600);
+	setup();
+	ctx.fillRect(x[0],y[0],15,15);
+	//food
+	var eating=1;
+	food();
+	function food(){
+		ctx.fillStyle = "red";
+		fx=Math.floor(Math.random()*600)-10;
+		fy=Math.floor(Math.random()*600)-10;
+		ctx.fillRect(fx,fy,15,15);
+	}
+	setInterval(eat,1);
+	function eat(){
+		if(x[0]-fx<=15&&x[0]-fx>=-15){
+			if (y[0]-fy<=15&&y[0]-fy>=-15) {
+				ctx.clearRect(fx,fy,15,15);
+				x.push(fx);
+				y.push(fy);
+				food();
+			}
+		}
+	}
+	//tgetout
+	//die
+	setInterval(die,1);
+	function die(){
+		if ((x[0]<=10 && y[0]<=149)||(x[0]<=150&&y[0]<=10) ) {
+			alert("game over");
+			main();
+		}
+
+		if ((x[0]>=450 && y[0]<=10)||(x[0]>=585&&y[0]<=140) ) {
+			alert("game over");
+			main();
+		}
+		if ((x[0]<=10 && y[0]>=445)||(x[0]<=150&&y[0]>=585) ) {
+			alert("game over");
+			main();
+		}
+		if ((x[0]>=445 && y[0]>=585)||(x[0]>=585&&y[0]>=445) ) {
+			alert("game over");
+			main();
+		}
+	}
+	setInterval(getout,1);
+	function getout(){
+		if(y[0]<0){
+			y[0]=600;
+		}
+		if (x[0]<0) {
+			x[0]=600;
+		}
+		if (x[0]>600) {
+			x[0]=0;
+		}
+		if (y[0]>600) {
+			y[0]=0;
+		}
+	}
+	//left
+		function left(){
+			ctx.fillStyle = "black";
+				for(let i=1;i<x.length;i++){
+			if (x[0]==x[i] && y[0]==y[i]) {
+				clearInterval(m);
+				document.removeEventListener("keydown",move);
+				alert("game over");
+				main();
+			}
+		}
+		x.unshift(x[0]-(15));
+		y.unshift(y[0]+0);
+		ctx.clearRect(x[(x.length)-1]-1,y[(y.length)-1]-1,17,17);
+		x.pop();
+		y.pop();
+		for (let i = 0; i < x.length; i++) {
+		    ctx.fillRect(x[i],y[i],15,15);
+		     ctx.strokeStyle="red";
+		    ctx.strokeRect(x[i],y[i],15,15);
+	    }
+	}
+	//up
+	function up(){
+		ctx.fillStyle = "black";
+			for(let i=1;i<x.length;i++){
+			if (x[0]==x[i] && y[0]==y[i]) {
+				clearInterval(m);
+				document.removeEventListener("keydown",move);
+				alert("game over");
+				main();
+			}
+		}
+		y.unshift(y[0]-(15));
+		x.unshift(x[0]+0);
+		ctx.clearRect(x[(x.length)-1]-1,y[(y.length)-1]-1,17,17);
+		x.pop();
+		y.pop();
+		for (let i = 0; i < x.length; i++) {
+		    ctx.fillRect(x[i],y[i],15,15);
+		     ctx.strokeStyle="red";
+		    ctx.strokeRect(x[i],y[i],15,15);
+	    }
+	}
+	//right
+	function right(){
+		ctx.fillStyle = "black";
+			for(let i=1;i<x.length;i++){
+			if (x[0]==x[i] && y[0]==y[i]) {
+				clearInterval(m);
+				document.removeEventListener("keydown",move);
+				alert("game over");
+				main();
+			}
+		}
+		x.unshift(x[0]+(15));
+		y.unshift(y[0]+0);
+		ctx.clearRect(x[(x.length)-1]-1,y[(y.length)-1]-1,17,17);
+		x.pop();
+		y.pop();
+		for (let i = 0; i < x.length; i++) {
+		    ctx.fillRect(x[i],y[i],15,15);
+		    ctx.strokeStyle="red";
+		    ctx.strokeRect(x[i],y[i],15,15);
+		    
+	    }
+	}
+	//down
+	function down(){
+		ctx.fillStyle = "black";
+			for(let i=1;i<x.length;i++){
+			if (x[0]==x[i] && y[0]==y[i]) {
+				clearInterval(m);
+				document.removeEventListener("keydown",move);alert("game over");;main();
+			}
+		}
+		y.unshift(y[0]+(15));
+		x.unshift(x[0]+0);
+		ctx.clearRect(x[(x.length)-1]-1,y[(y.length)-1]-1,17,17);
+		x.pop();
+		y.pop();
+		for (let i = 0; i < x.length; i++) {
+		    ctx.fillRect(x[i],y[i],15,15);
+		     ctx.strokeStyle="red";
+		    ctx.strokeRect(x[i],y[i],15,15);
+	    }
+	}
+	function move(ev){
+		speed = document.getElementById('speed').value/10;
+		dir = ev.keyCode;
+		if (dir === 37 && odir!="right") {
+			odir="left";
+			clearInterval(m);
+			m=setInterval(left,100);
+		}
+		if (dir === 38 && odir!="down") {
+			odir="up";
+			clearInterval(m);
+			m=setInterval(up,100);
+		}
+		if(dir === 39 && odir!="left" ){
+			odir="right";
+			clearInterval(m);
+			m=setInterval(right,100);
+		}
+		if(dir === 40 && odir!="up"){
+			odir="down";
+			clearInterval(m);
+			m=setInterval(down,100);
+		}
+
+	}
+
+	document.addEventListener("keydown",move);}
+clk.onclick=()=>{
+	main();
+}
+</script>
+</body>
+</html>
